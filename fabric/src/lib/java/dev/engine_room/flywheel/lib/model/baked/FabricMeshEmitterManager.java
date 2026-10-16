@@ -1,6 +1,7 @@
 package dev.engine_room.flywheel.lib.model.baked;
 
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadView;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.ShadeMode;
 import net.fabricmc.fabric.api.util.TriState;
 
 import org.jetbrains.annotations.ApiStatus;
@@ -20,7 +21,7 @@ public class FabricMeshEmitterManager extends MeshEmitterManager<FabricMeshEmitt
 	}
 
 	public void prepareForGeometry(QuadView quad) {
-		boolean shade = quad.diffuseShade();
+		boolean shade = quad.shadeMode() == ShadeMode.VANILLA;
 		TriState aoMode = quad.ambientOcclusion();
 		boolean ao = useAo && aoMode.orElse(defaultAo);
 
