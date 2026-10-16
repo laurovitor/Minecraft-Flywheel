@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.lighting.LightEngine;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.PlayerTeam;
+import net.minecraft.world.scores.TeamColor;
 
 public final class PlayerUniforms extends UniformWriter {
 	private static final int SIZE = 16 * 2 + 8 + 4 * 9;
@@ -63,7 +64,7 @@ public final class PlayerUniforms extends UniformWriter {
 
 	private static long writeTeamColor(long ptr, @Nullable PlayerTeam team) {
 		if (team != null) {
-			Integer color = team.getColor().getColor();
+			Integer color = team.getColor().map(TeamColor::rgb).orElse(null);
 
 			if (color != null) {
 				int red = ARGB.red(color);

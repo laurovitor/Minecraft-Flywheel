@@ -5,17 +5,17 @@ import java.util.Collections;
 import org.jspecify.annotations.Nullable;
 import org.lwjgl.opengl.GL33C;
 
-import com.mojang.blaze3d.opengl.GlConst;
-import com.mojang.blaze3d.opengl.GlDevice;
-import com.mojang.blaze3d.opengl.GlSampler;
-import com.mojang.blaze3d.opengl.GlStateManager;
-import com.mojang.blaze3d.opengl.GlTexture;
+import com.mojang.renderpearl.backend.opengl.GlConst;
+import com.mojang.renderpearl.backend.opengl.GlSampler;
+import com.mojang.renderpearl.backend.opengl.GlStateManager;
+import com.mojang.renderpearl.backend.opengl.GlTexture;
+import com.mojang.renderpearl.backend.opengl.FrameBufferAttachment;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.textures.FilterMode;
-import com.mojang.blaze3d.textures.GpuSampler;
-import com.mojang.blaze3d.textures.GpuTexture;
-import com.mojang.blaze3d.textures.GpuTextureView;
+import com.mojang.renderpearl.api.textures.FilterMode;
+import com.mojang.renderpearl.api.textures.GpuSampler;
+import com.mojang.renderpearl.api.textures.GpuTexture;
+import com.mojang.renderpearl.api.textures.GpuTextureView;
 
 import dev.engine_room.flywheel.backend.Samplers;
 import dev.engine_room.flywheel.backend.gl.GlUtil;
@@ -61,10 +61,7 @@ public class TextureBinder {
 
 	public static void bindRenderTarget(RenderTarget target) {
 		GlTexture colorTexture = (GlTexture) target.getColorTexture();
-		int i = colorTexture.getFbo(
-				GlUtil.getGlDevice().directStateAccess(),
-				target.getDepthTexture()
-		);
+		int i = GlUtil.getFramebuffer(colorTexture, (FrameBufferAttachment) target.getDepthTexture());
 		GlStateManager._glBindFramebuffer(GlConst.GL_FRAMEBUFFER, i);
 	}
 }

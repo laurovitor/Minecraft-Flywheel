@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.textures.FilterMode;
-import com.mojang.blaze3d.textures.GpuSampler;
+import com.mojang.renderpearl.api.textures.FilterMode;
+import com.mojang.renderpearl.api.textures.GpuSampler;
 
 import net.minecraft.resources.Identifier;
 
@@ -15,7 +15,7 @@ import org.lwjgl.opengl.GL40;
 import org.lwjgl.opengl.GL42;
 import org.lwjgl.opengl.GL43;
 
-import com.mojang.blaze3d.opengl.GlConst;
+import com.mojang.renderpearl.backend.opengl.GlConst;
 
 import dev.engine_room.flywheel.api.backend.Engine;
 import dev.engine_room.flywheel.api.instance.Instance;
@@ -38,6 +38,7 @@ import dev.engine_room.flywheel.backend.gl.array.GlVertexArray;
 import dev.engine_room.flywheel.backend.gl.buffer.GlBuffer;
 import dev.engine_room.flywheel.backend.gl.buffer.GlBufferType;
 import dev.engine_room.flywheel.backend.gl.buffer.GlBufferUsage;
+import dev.engine_room.flywheel.backend.mixin.ModelBakeryAccessor;
 import dev.engine_room.flywheel.lib.material.SimpleMaterial;
 import dev.engine_room.flywheel.lib.memory.MemoryBlock;
 import net.minecraft.client.Minecraft;
@@ -151,7 +152,7 @@ public class IndirectDrawManager extends DrawManager<IndirectInstancer<?>> {
 		lightBuffers.bind();
 		matrixBuffer.bind();
 		Uniforms.bindAll();
-		TextureBinder.bindRenderTarget(Minecraft.getInstance().getMainRenderTarget());
+		TextureBinder.bindRenderTarget(Minecraft.getInstance().gameRenderer.mainRenderTarget());
 
 		for (var group : cullingGroups.values()) {
 			group.submitSolid();
@@ -245,7 +246,7 @@ public class IndirectDrawManager extends DrawManager<IndirectInstancer<?>> {
 		// Set up the crumbling program buffers. Nothing changes here between draws.
 		GlBufferType.DRAW_INDIRECT_BUFFER.bind(crumblingDrawBuffer.handle());
 		GL30.glBindBufferRange(GL43.GL_SHADER_STORAGE_BUFFER, BufferBindings.DRAW, crumblingDrawBuffer.handle(), 0, IndirectBuffers.DRAW_COMMAND_STRIDE);
-		TextureBinder.bindRenderTarget(Minecraft.getInstance().getMainRenderTarget());
+		TextureBinder.bindRenderTarget(Minecraft.getInstance().gameRenderer.mainRenderTarget());
 
 		for (var groupEntry : byType.entrySet()) {
 			var byProgress = groupEntry.getValue();
@@ -258,7 +259,7 @@ public class IndirectDrawManager extends DrawManager<IndirectInstancer<?>> {
 			}
 
 			for (var progressEntry : byProgress.int2ObjectEntrySet()) {
-				Identifier crumblingTextureId = ModelBakery.BREAKING_LOCATIONS.get(progressEntry.getIntKey());
+				Identifier crumblingTextureId = ModelBakeryAccessor.flywheel$getBreakingLocations().get(progressEntry.getIntKey());
 				GpuSampler crumblingTextureSampler = RenderSystem.getSamplerCache().getRepeat(FilterMode.NEAREST);
 				TextureBinder.bind(Samplers.CRUMBLING.number, crumblingTextureId, crumblingTextureSampler);
 
@@ -292,7 +293,10 @@ public class IndirectDrawManager extends DrawManager<IndirectInstancer<?>> {
 	@Override
 	public void triggerFallback() {
 		IndirectPrograms.kill();
-		Minecraft.getInstance().levelRenderer.allChanged();
+		var minecraft = Minecraft.getInstance();
+		if (minecraft.level != null) {
+			minecraft.levelRenderer.resetLevelRenderData();
+		}
 	}
 
 	@Override

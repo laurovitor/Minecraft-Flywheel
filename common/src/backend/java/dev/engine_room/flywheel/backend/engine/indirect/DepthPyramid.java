@@ -3,10 +3,10 @@ package dev.engine_room.flywheel.backend.engine.indirect;
 import org.lwjgl.opengl.GL32;
 import org.lwjgl.opengl.GL46;
 
-import com.mojang.blaze3d.opengl.GlConst;
-import com.mojang.blaze3d.opengl.GlStateManager;
-import com.mojang.blaze3d.opengl.GlTexture;
-import com.mojang.blaze3d.textures.GpuTexture;
+import com.mojang.renderpearl.backend.opengl.GlConst;
+import com.mojang.renderpearl.backend.opengl.GlStateManager;
+import com.mojang.renderpearl.backend.opengl.GlTexture;
+import com.mojang.renderpearl.api.textures.GpuTexture;
 
 import dev.engine_room.flywheel.backend.compile.IndirectPrograms;
 import dev.engine_room.flywheel.backend.gl.GlTextureUnit;
@@ -27,7 +27,7 @@ public class DepthPyramid {
 
 	public void generate() {
 		var mainRenderTarget = Minecraft.getInstance()
-				.getMainRenderTarget();
+				.gameRenderer.mainRenderTarget();
 
 		int width = mip0Size(mainRenderTarget.width);
 		int height = mip0Size(mainRenderTarget.height);

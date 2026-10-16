@@ -5,8 +5,8 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.textures.FilterMode;
-import com.mojang.blaze3d.textures.GpuSampler;
+import com.mojang.renderpearl.api.textures.FilterMode;
+import com.mojang.renderpearl.api.textures.GpuSampler;
 
 import dev.engine_room.flywheel.api.backend.Engine;
 import dev.engine_room.flywheel.api.instance.Instance;
@@ -32,6 +32,7 @@ import dev.engine_room.flywheel.backend.engine.uniform.Uniforms;
 import dev.engine_room.flywheel.backend.gl.TextureBuffer;
 import dev.engine_room.flywheel.backend.gl.array.GlVertexArray;
 import dev.engine_room.flywheel.backend.gl.shader.GlProgram;
+import dev.engine_room.flywheel.backend.mixin.ModelBakeryAccessor;
 import dev.engine_room.flywheel.lib.material.SimpleMaterial;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.ModelBakery;
@@ -123,7 +124,7 @@ public class InstancedDrawManager extends DrawManager<InstancedInstancer<?>> {
 		TextureBinder.bindLightAndOverlay();
 		light.bind();
 
-		TextureBinder.bindRenderTarget(Minecraft.getInstance().getMainRenderTarget());
+		TextureBinder.bindRenderTarget(Minecraft.getInstance().gameRenderer.mainRenderTarget());
 
 
 		submitDraws();
@@ -269,7 +270,7 @@ public class InstancedDrawManager extends DrawManager<InstancedInstancer<?>> {
 		vao.bindForDraw();
 
 		TextureBinder.bindLightAndOverlay();
-		TextureBinder.bindRenderTarget(Minecraft.getInstance().getMainRenderTarget());
+		TextureBinder.bindRenderTarget(Minecraft.getInstance().gameRenderer.mainRenderTarget());
 
 		for (var groupEntry : byType.entrySet()) {
 			var byProgress = groupEntry.getValue();
@@ -277,7 +278,7 @@ public class InstancedDrawManager extends DrawManager<InstancedInstancer<?>> {
 			GroupKey<?> shader = groupEntry.getKey();
 
 			for (var progressEntry : byProgress.int2ObjectEntrySet()) {
-				Identifier crumblingTextureId = ModelBakery.BREAKING_LOCATIONS.get(progressEntry.getIntKey());
+				Identifier crumblingTextureId = ModelBakeryAccessor.flywheel$getBreakingLocations().get(progressEntry.getIntKey());
 				GpuSampler crumblingTextureSampler = RenderSystem.getSamplerCache().getRepeat(FilterMode.NEAREST);
 				TextureBinder.bind(Samplers.CRUMBLING.number, crumblingTextureId, crumblingTextureSampler);
 
@@ -306,7 +307,10 @@ public class InstancedDrawManager extends DrawManager<InstancedInstancer<?>> {
 	@Override
 	public void triggerFallback() {
 		InstancingPrograms.kill();
-		Minecraft.getInstance().levelRenderer.allChanged();
+		var minecraft = Minecraft.getInstance();
+		if (minecraft.level != null) {
+			minecraft.levelRenderer.resetLevelRenderData();
+		}
 	}
 
 	@Override

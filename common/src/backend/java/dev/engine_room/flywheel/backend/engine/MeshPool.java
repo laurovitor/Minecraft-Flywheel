@@ -8,8 +8,8 @@ import java.util.Map;
 import org.jspecify.annotations.Nullable;
 import org.lwjgl.opengl.GL32;
 
-import com.mojang.blaze3d.opengl.GlConst;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.renderpearl.backend.opengl.GlConst;
+import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
 
 import dev.engine_room.flywheel.api.model.Mesh;
 import dev.engine_room.flywheel.backend.InternalVertex;
@@ -183,9 +183,9 @@ public class MeshPool {
 
 		public void draw(int instanceCount) {
 			if (instanceCount > 1) {
-				GL32.glDrawElementsInstancedBaseVertex(GlConst.toGl(VertexFormat.Mode.TRIANGLES), mesh.indexCount(), GlConst.GL_UNSIGNED_INT, firstIndexByteOffset(), instanceCount, baseVertex);
+				GL32.glDrawElementsInstancedBaseVertex(GlConst.toGl(PrimitiveTopology.TRIANGLES), mesh.indexCount(), GlConst.GL_UNSIGNED_INT, firstIndexByteOffset(), instanceCount, baseVertex);
 			} else {
-				GL32.glDrawElementsBaseVertex(GlConst.toGl(VertexFormat.Mode.TRIANGLES), mesh.indexCount(), GlConst.GL_UNSIGNED_INT, firstIndexByteOffset(), baseVertex);
+				GL32.glDrawElementsBaseVertex(GlConst.toGl(PrimitiveTopology.TRIANGLES), mesh.indexCount(), GlConst.GL_UNSIGNED_INT, firstIndexByteOffset(), baseVertex);
 			}
 		}
 

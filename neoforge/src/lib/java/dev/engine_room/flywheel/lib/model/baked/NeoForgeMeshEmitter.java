@@ -27,7 +27,7 @@ public class NeoForgeMeshEmitter extends MeshEmitter {
 
 	@Nullable
 	private BufferBuilder getBuffer(BakedQuad quad) {
-		boolean shade = quad.materialInfo().shade();
+		boolean shade = true;
 		boolean ao = quad.materialInfo().ambientOcclusion() && this.ao;
 		return getBuffer(shade, ao);
 	}
@@ -80,6 +80,11 @@ public class NeoForgeMeshEmitter extends MeshEmitter {
 
 	@Override
 	public VertexConsumer setUv2(int u, int v) {
+		throw new UnsupportedOperationException("NeoForgeMeshEmitter only supports putBakedQuad/putBlockBakedQuad!");
+	}
+
+	@Override
+	public VertexConsumer setUv3(float u, float v) {
 		throw new UnsupportedOperationException("NeoForgeMeshEmitter only supports putBakedQuad/putBlockBakedQuad!");
 	}
 

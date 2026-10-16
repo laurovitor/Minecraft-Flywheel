@@ -78,7 +78,7 @@ public final class ModelUtil {
 
 	@Nullable
 	public static Material getItemMaterial(RenderType renderType) {
-		if (renderType == Sheets.cutoutBlockSheet()) {
+		if (renderType == Sheets.cutoutBlockItemSheet()) {
 			return Materials.CUTOUT_BLOCK;
 		}
 
@@ -90,10 +90,16 @@ public final class ModelUtil {
 			return Materials.TRANSLUCENT_ITEM_ENTITY_ITEM;
 		}
 
-		if (renderType == RenderTypes.glint() || renderType == RenderTypes.glintTranslucent()) {
+		if (renderType == Sheets.cutoutBlockItemGlintSheet()
+				|| renderType == Sheets.translucentBlockItemGlintSheet()
+				|| renderType == Sheets.cutoutItemGlintSheet()
+				|| renderType == Sheets.translucentItemGlintSheet()) {
 			return Materials.GLINT;
 		}
-		if (renderType == RenderTypes.entityGlint()) {
+		if (renderType == Sheets.cutoutBlockItemGlintSpecialSheet()
+				|| renderType == Sheets.translucentBlockItemGlintSpecialSheet()
+				|| renderType == Sheets.cutoutItemGlintSpecialSheet()
+				|| renderType == Sheets.translucentItemGlintSpecialSheet()) {
 			return Materials.GLINT_ENTITY;
 		}
 		return null;
