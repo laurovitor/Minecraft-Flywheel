@@ -4,7 +4,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.jspecify.annotations.Nullable;
 
 import dev.engine_room.flywheel.api.backend.Backend;
-import dev.engine_room.flywheel.api.backend.BackendManager;
 import dev.engine_room.flywheel.backend.BackendConfig;
 import dev.engine_room.flywheel.backend.compile.LightSmoothness;
 import net.minecraft.IdentifierException;
@@ -30,7 +29,7 @@ public class NeoForgeFlwConfig implements FlwConfig {
 		Backend backend = parseBackend(client.backend.get());
 		if (backend == null) {
 			client.backend.set(DEFAULT_BACKEND_STR);
-			backend = BackendManager.defaultBackend();
+			backend = BackendManagerImpl.OFF_BACKEND;
 		}
 
 		return backend;
@@ -39,7 +38,9 @@ public class NeoForgeFlwConfig implements FlwConfig {
 	@Nullable
 	private static Backend parseBackend(String value) {
 		if (value.equals(DEFAULT_BACKEND_STR)) {
-			return BackendManager.defaultBackend();
+			// The 26.3 instanced draw path currently submits no visible geometry.
+			// Use the working block-entity renderer until that backend is ported.
+			return BackendManagerImpl.OFF_BACKEND;
 		}
 
 		Identifier backendId;
@@ -86,7 +87,7 @@ public class NeoForgeFlwConfig implements FlwConfig {
 		public final NeoForgeBackendConfig backendConfig;
 
 		private ClientConfig(ModConfigSpec.Builder builder) {
-			backend = builder.comment("Select the backend to use. Set to \"DEFAULT\" to let Flywheel decide.")
+			backend = builder.comment("Select the backend to use. On 26.3, DEFAULT uses the vanilla renderer until Flywheel's instanced draw path is ported.")
 					.define("backend", DEFAULT_BACKEND_STR);
 
 			limitUpdates = builder.comment("Enable or disable instance update limiting with distance.")
