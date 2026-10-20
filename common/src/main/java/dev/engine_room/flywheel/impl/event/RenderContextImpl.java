@@ -13,8 +13,6 @@ import net.minecraft.client.renderer.state.level.LevelRenderState;
 public record RenderContextImpl(LevelRenderer renderer, ClientLevel level, RenderBuffers buffers, Matrix4fc modelView,
                                 Matrix4fc projection, Matrix4fc viewProjection, CameraRenderState cameraRenderState,
 								LevelRenderState levelRenderState, float partialTick) implements RenderContext {
-	public static ScopedValue<Matrix4f> PROJECTION_MATRIX_NO_BOB = ScopedValue.newInstance();
-
 	public static RenderContextImpl create(LevelRenderer renderer, ClientLevel level, RenderBuffers buffers, Matrix4fc modelView, Matrix4f projection, CameraRenderState cameraRenderState, LevelRenderState levelRenderState, float partialTick) {
 		Matrix4f viewProjection = new Matrix4f(projection);
 		viewProjection.mul(modelView);

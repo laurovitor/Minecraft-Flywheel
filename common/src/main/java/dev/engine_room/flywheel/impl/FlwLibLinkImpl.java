@@ -54,7 +54,8 @@ public class FlwLibLinkImpl implements FlwLibLink {
 		EntityRenderer<? super T, ?> renderer = Minecraft.getInstance()
 				.getEntityRenderDispatcher()
 				.getRenderer(entity);
-		return ((EntityRendererAccessor) renderer).flywheel$getBoundingBoxForCulling(entity);
+		return ((EntityRendererAccessor) renderer).flywheel$getBoundingBoxForCulling(entity,
+				Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false));
 	}
 
 	@Override

@@ -8,15 +8,14 @@
     "ClientChunkCacheMixin",
     "EntityRendererAccessor",
     "EntityTypeMixin",
-    "GameRendererMixin",
     "LevelMixin",
     "LevelRendererMixin",
     "MinecraftMixin",
     "ModelPartAccessor",
     "PoseStackMixin",
     "visualmanage.BlockEntityMixin",
+    "visualmanage.ClientLevelMixin",
     "visualmanage.LevelChunkMixin",
-    "visualmanage.LevelRendererMixin",
     "visualmanage.SectionCompilerMixin"
   ],
   "injectors": {

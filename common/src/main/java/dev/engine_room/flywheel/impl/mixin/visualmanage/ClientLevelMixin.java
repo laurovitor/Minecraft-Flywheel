@@ -1,28 +1,24 @@
 package dev.engine_room.flywheel.impl.mixin.visualmanage;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import dev.engine_room.flywheel.api.visualization.VisualizationManager;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-@Mixin(LevelRenderer.class)
-abstract class LevelRendererMixin {
-	@Shadow
-	private ClientLevel level;
-
+@Mixin(ClientLevel.class)
+abstract class ClientLevelMixin {
 	/**
 	 * This gets called when a block is marked for rerender by vanilla.
 	 */
-	@Inject(method = "setBlockDirty(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/block/state/BlockState;)V", at = @At("TAIL"))
+	@Inject(method = "setBlocksDirty", at = @At("TAIL"))
 	private void flywheel$checkUpdate(BlockPos pos, BlockState oldState, BlockState newState, CallbackInfo ci) {
+		ClientLevel level = (ClientLevel) (Object) this;
 		VisualizationManager manager = VisualizationManager.get(level);
 		if (manager == null) {
 			return;

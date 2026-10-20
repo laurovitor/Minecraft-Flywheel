@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import dev.engine_room.flywheel.api.event.EndClientResourceReloadEvent;
 import dev.engine_room.flywheel.impl.FlwImpl;
+import net.minecraft.client.GameLoadCookie;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.neoforged.fml.ModLoader;
@@ -28,8 +29,8 @@ abstract class MinecraftMixin {
 		FlwImpl.freezeRegistries();
 	}
 
-	@Inject(method = "lambda$new$4", at = @At("HEAD"))
-	private void flywheel$onEndInitialResourceReload(@Coerce Object gameLoadCookie, Optional<Throwable> error, CallbackInfo ci) {
+	@Inject(method = "lambda$new$3", at = @At("HEAD"))
+	private void flywheel$onEndInitialResourceReload(GameLoadCookie gameLoadCookie, Optional<Throwable> error, CallbackInfo ci) {
 		ModLoader.postEvent(new EndClientResourceReloadEvent((Minecraft) (Object) this, resourceManager, true, error));
 	}
 

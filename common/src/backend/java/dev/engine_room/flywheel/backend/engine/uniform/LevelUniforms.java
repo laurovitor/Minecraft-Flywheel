@@ -29,7 +29,9 @@ public final class LevelUniforms extends UniformWriter {
 
 		var skyColor = levelRenderState.skyRenderState.skyColor;
 		int cloudColor = levelRenderState.cloudColor;
-		ptr = writeVec4(ptr, skyColor.x(), skyColor.y(), skyColor.z(), 1f);
+		// The first submitted frame can precede sky-state extraction in 26.3.
+		ptr = skyColor == null ? writeVec4(ptr, 0f, 0f, 0f, 1f)
+				: writeVec4(ptr, skyColor.x(), skyColor.y(), skyColor.z(), 1f);
 		ptr = writeVec4(ptr, ARGB.redFloat(cloudColor), ARGB.greenFloat(cloudColor), ARGB.blueFloat(cloudColor), 1f);
 
 		ptr = writeVec3(ptr, LIGHT0_DIRECTION);
